@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Listrak Remarketing Magento Extension Ver. 2.0.0
+ *
+ * PHP version 5
+ *
+ * @category  Listrak
+ * @package   Listrak_Remarketing
+ * @author    Listrak Magento Team <magento@listrak.com>
+ * @copyright 2015 Listrak Inc
+ * @license   http://s1.listrakbi.com/licenses/magento.txt License For Customer Use of Listrak Software
+ * @link      http://www.listrak.com
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="after.body.start">
+            <block class="Listrak\Remarketing\Block\Conversion\Fingerprint" name="onescript.fingerprint"
+                   template="Listrak_Remarketing::fingerprint.phtml">
+                <arguments>
+                    <argument name="always_render_template" xsi:type="boolean">true</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+        <referenceBlock name="onescript.static">
+            <block class="Listrak\Remarketing\Block\Conversion\Order" name="onescript.conversion.order" />
+            <block class="Listrak\Remarketing\Block\Conversion\Cart" name="onescript.conversion.cart" />
+        </referenceBlock>
+    </body>
+</page>

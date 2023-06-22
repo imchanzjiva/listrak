@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Listrak Remarketing Magento Extension Ver. 2.0.0
+ *
+ * PHP version 5
+ *
+ * @category  Listrak
+ * @package   Listrak_Remarketing
+ * @author    Listrak Magento Team <magento@listrak.com>
+ * @copyright 2015 Listrak Inc
+ * @license   http://s1.listrakbi.com/licenses/magento.txt License For Customer Use of Listrak Software
+ * @link      http://www.listrak.com
+ */
+
+/**
+ * Listrak utils object
+ *
+ * @see \Listrak\Remarketing\Block\Utils
+ */
+?>
+<script type="text/javascript">
+define('listrak_utils', ['jquery'], function(jQuery) {
+    'use strict';
+    var utils = { requesting: false };
+
+    var previousEmails = [];
+    if(document.addEventListener) {
+        document.addEventListener("ltkSubscribe", function(event) { try {
+            if (event.detail.email) previousEmails.push(event.detail.email.toLowerCase());
+        } catch(e) { _ltk_util.submitException(e, 'magento2 subscribe event listener'); } });
+    }
+    utils.isEmailUnknown = function(email) {
+        return previousEmails.indexOf(email.toLowerCase()) === -1;
+    }
+
+    var makeRequest = function(url) {
+        <?php if ($block->getDefineFunctions()) :
+            ?>
+            utils.requesting = true;
+            jQuery.ajax(url).always(function() { utils.requesting = false; });
+            <?php
+        endif; ?>
+    };
+    utils.track = <?=/* @noEscape */$block->getTrackFunction()?>;
+    utils.order = <?=/* @noEscape */$block->getOrderFunction()?>;
+
+    return utils;
+});
+</script>

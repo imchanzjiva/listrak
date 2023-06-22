@@ -1,0 +1,97 @@
+<?php
+/**
+ * Listrak Remarketing Magento Extension Ver. 2.0.0
+ *
+ * PHP version 5
+ *
+ * @category  Listrak
+ * @package   Listrak_Remarketing
+ * @author    Listrak Magento Team <magento@listrak.com>
+ * @copyright 2015 Listrak Inc
+ * @license   http://s1.listrakbi.com/licenses/magento.txt License For Customer Use of Listrak Software
+ * @link      http://www.listrak.com
+ */
+
+/**
+ * Listrak email capture UI
+ *
+ * @see \Listrak\Remarketing\Block\Adminhtml
+ *
+ * @SuppressWarnings()
+ */
+?>
+
+<?php
+if ($block->isRemarketingSection()) :
+    ?>
+    <style type="text/css">
+        .email-capture-field {
+            margin-bottom: 4px;
+        }
+        .email-capture-field input {
+            margin-right: -39px;
+            padding-right: 43px !important;
+        }
+    </style>
+    <script type="text/javascript">
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            var valueField = $("#remarketing_onescript_capture_fields");
+            if (typeof valueField !== 'undefined' && valueField.length > 0) {
+                valueField.attr("type", "hidden");
+
+                var persistChange = function() {
+                    var joined = valueField.siblings(".email-capture-field")
+                            .map(function(index, field) { return jQuery(field).find("input").val(); })
+                            .filter(function(index, value) { return typeof value !== 'undefined' && value.length > 0; })
+                            .get()
+                            .join(",");
+                    valueField.val(joined);
+                };
+
+                var addField = function(value, focus) {
+                    var lastField = valueField.siblings(".email-capture-field").last();
+                    var disable = false;
+                    if (lastField.length === 0) {
+                        lastField = valueField;
+                        disable = lastField.attr("disabled");
+                    }
+                    else {
+                        disable = lastField.find("input").attr("disabled");
+                    }
+
+                    var input = $("<input type='text' />");
+                    var button = $("<button>X</button>");
+
+                    var container = $("<div class='email-capture-field'></div>");
+                    container.append(input, button);
+
+                    input.val(value).blur(persistChange);
+                    input.attr("disabled", disable);
+
+                    button.click(function(e) { $(e.currentTarget).parent().remove(); persistChange(); return false; });
+
+                    lastField.after(container);
+                    if (focus === true) {
+                        input.focus();
+                    }
+                };
+
+                var addFieldButton = $('<button>Add Field</button>');
+                addFieldButton.attr("disabled", valueField.attr("disabled"));
+                addFieldButton.click(function() { addField("", true); return false; });
+                valueField.after(addFieldButton);
+
+                var fields = valueField.val().split(",");
+                if (fields.length != 1 || fields[0] != '') {
+                    for(var i = 0; i < fields.length; ++i) {
+                        addField(fields[i]);
+                    }
+                }
+            }
+        });
+    });
+    </script>
+    <?php
+endif;
+?>

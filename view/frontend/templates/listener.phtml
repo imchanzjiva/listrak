@@ -1,0 +1,40 @@
+<?php
+/**
+ * Listrak Remarketing Magento Extension Ver. 2.0.0
+ *
+ * PHP version 5
+ *
+ * @category  Listrak
+ * @package   Listrak_Remarketing
+ * @author    Listrak Magento Team <magento@listrak.com>
+ * @copyright 2015 Listrak Inc
+ * @license   http://s1.listrakbi.com/licenses/magento.txt License For Customer Use of Listrak Software
+ * @link      http://www.listrak.com
+ */
+
+/**
+ * Listrak utils object
+ *
+ * @see \Listrak\Remarketing\Block\Utils
+ */
+?>
+if (typeof window.XMLHttpRequest !== 'undefined') {
+    var ajaxOpen = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function() {
+        ajaxOpen.apply(this, arguments);
+        if(arguments.length >= 2 && arguments[1].indexOf("//" + location.hostname) == arguments[1].indexOf("//")) {
+            if (!utils.requesting && typeof this.addEventListener === 'function') {
+                this.setRequestHeader("Listrak-Listening", "1");
+                this.addEventListener("load", function(e) {
+                    if (!utils.requesting
+                        && typeof e.currentTarget !== 'undefined') {
+                        if (e.currentTarget.getResponseHeader('Listrak-Change-Flag') !== null)
+                            utils.track();
+                        if (e.currentTarget.getResponseHeader('Listrak-InstantPurchase-Flag') !== null)
+                            utils.order();
+                    }
+                });
+            }
+        }
+    };
+}
